@@ -162,13 +162,14 @@ function SelectEnem({userId,onSetData}) {
       HorC === "C" ? "COOLプレイヤー名を入力" : "HOTプレイヤー名を入力";
     const onChangeName = (e) =>
       HorC === "C" ? setNameCool(e.target.value) : setNameHot(e.target.value);
+    const inputId = HorC === "C" ? "player_name_input_C" : "player_name_input_H";
     return (
       <div className="player_name_input_container">
         <label htmlFor="player_name_input_H">プレイヤー名：</label>
         <input
-          id="player_name_input_H"
+          id={inputId}  
           className="player_name_input"
-          value={nameCool}
+          value={HorC === "C" ? nameCool : nameHot}
           placeholder={placeHolder}
           onChange={onChangeName}
           type="text"

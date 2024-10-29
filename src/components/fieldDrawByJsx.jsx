@@ -1,6 +1,58 @@
 import "./field.css";
 
 /**
+ * returnLightMass
+ *
+ * そのターンに、LookやSearchコマンドを実行した場合に照らされるマスを返す
+ *
+ * @param {Array<Array<Array<string>>>} fields - すべてのターンのfieldのデータ
+ * @param {number} turnNum - 表示するターンの番号
+ * @param {string} operate - そのターンでの命令 (2文字から構成 例: wu -> walk up, ll -> look left)
+ * @returns {Set<[number, number]>}
+ *
+ */
+const returnLightMass = (props) => {
+  if (props.operate == undefined) return new Set();
+  let x = -1, y = -1;
+  for (let i=0; i<props.fields[props.turnNum].length; i++) {
+    for (let j=0; j<props.fields[props.turnNum][i].length; j++) {
+      if (props.turnNum % 2 === 0) {
+        if (props.fields[props.turnNum][i][j] === "C") {
+          x = i;
+          y = j;
+        }
+      } else {
+        if (props.fields[props.turnNum][i][j] === "H") {
+          x = i;
+          y = j;
+        }
+      }
+    }
+  }
+
+  // ls には(1,2)の座標を15*1+2という形で入れる
+  let ls = new Set();
+  const dx = [-1,0,1,0], dy = [0,1,0,-1];
+  const idx = "urdl".indexOf(props.operate[1]);
+  if (props.operate[0] === "l") {
+    for (let i=1; i<=9; i++) {
+      let nx = x+i*dx[idx], ny = y+i*dy[idx];
+      if (nx < 0 || nx >= 17 || ny < 0 || ny >= 15) continue;
+      ls.add(nx*15 + ny);
+    }
+  } else if (props.operate[0] === "s") {
+    for (let i=-1; i<=1; i++) {
+      for (let j=-1; j<=1; j++) {
+        let nx = x+2*dx[idx]+i, ny = y+2*dy[idx]+j;
+        if (nx < 0 || nx >= 17 || ny < 0 || ny >= 15) continue;
+        ls.add(nx*15 + ny);
+      }
+    }
+  }
+  return ls;
+}
+
+/**
  * FieldDrawByJsx
  *
  *
@@ -10,6 +62,7 @@ import "./field.css";
  * @param {number} width - fieldの幅
  * @param {number} height - fieldの高さ
  * @param {function} onClick - クリック時の処理 ({x: x, y: y}) => {}
+ * @param {string} operate - そのターンでの命令 (2文字から構成 例: wu -> walk up, ll -> look left)
  * @returns {JSX.Element}
  *
  */
@@ -19,6 +72,8 @@ const FieldDrawByJsx = (props) => {
     props.fields[props.turnNum].length !== 17
   )
     return <div>loading...</div>;
+
+  const lightMass = returnLightMass(props);
 
   const fieldJsx = props.fields[props.turnNum].map((row, i) => {
     return row.map((cell, j) => {
@@ -63,6 +118,15 @@ const FieldDrawByJsx = (props) => {
           } else if (j < 14 && props.fields[props.turnNum][i][j + 1] === "C") {
             className += " moved_right";
           }
+        }
+      }
+
+      if (lightMass.has(i*15 + j)) {
+        className += " scanLight";
+        if (props.turnNum % 2 === 0) {
+          className += " field_lighted_cell_cool";
+        } else {
+          className += " field_lighted_cell_hot";
         }
       }
 

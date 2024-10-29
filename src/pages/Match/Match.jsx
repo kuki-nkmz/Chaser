@@ -371,6 +371,7 @@ const Match = () => {
             turnNum={turnNum}
             height={height}
             width={width}
+            operate={matchLog.log[turnNum]}
           />
         </div>
         <div className="match_controls">
