@@ -34,13 +34,13 @@ const returnLightMass = (props) => {
   let ls = new Set();
   const dx = [-1,0,1,0], dy = [0,1,0,-1];
   const idx = "urdl".indexOf(props.operate[1]);
-  if (props.operate[0] === "l") {
+  if (props.operate[0] === "s") {
     for (let i=1; i<=9; i++) {
       let nx = x+i*dx[idx], ny = y+i*dy[idx];
       if (nx < 0 || nx >= 17 || ny < 0 || ny >= 15) continue;
       ls.add(nx*15 + ny);
     }
-  } else if (props.operate[0] === "s") {
+  } else if (props.operate[0] === "l") {
     for (let i=-1; i<=1; i++) {
       for (let j=-1; j<=1; j++) {
         let nx = x+2*dx[idx]+i, ny = y+2*dy[idx]+j;
