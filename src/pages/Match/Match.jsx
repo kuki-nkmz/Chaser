@@ -36,6 +36,7 @@ const Match = () => {
   const [autoSpeed,setAutoSpeed]=useState(1000)
   const [scores, setScores] = useState([]);
   const [speadM,setSpeadM]=useState(1)
+  const [isErrorInCreateMatchLog,setErrorInCreateMatchLog]=useState(false); 
   const { jsonData } = useParams();
   const navigate = useNavigate();
   const [play,{stop,pause}] = useSound(Sound)
@@ -108,7 +109,7 @@ const Match = () => {
         }
         if (px < 0 || px >= height || py < 0 || py >= width) {
           console.error("Position out of bounds:", { px, py });
-          return; // 無効な位置の場合はスキップ
+          setErrorInCreateMatchLog(true); // 無効な位置の場合はスキップ
         }
         if (act[0] === "p") {
           currentField[px][py] = "2";
@@ -135,6 +136,9 @@ const Match = () => {
         }
         newFields.push(structuredClone(currentField));
         newScores.push(structuredClone(score));
+        
+        if(isErrorInCreateMatchLog)return;
+
       });
       setFields(structuredClone(newFields));
       setScores(structuredClone(newScores));
@@ -161,7 +165,7 @@ const Match = () => {
   }
 
   const scoreComponent = ({ turn, player }) => {
-    if(turn === matchLog.Turn){
+    if(turn === matchLog.log.length){
       return resultComponent({ winner: matchLog.winner, player: player})
     }
     if(scores.length <= turn) {
