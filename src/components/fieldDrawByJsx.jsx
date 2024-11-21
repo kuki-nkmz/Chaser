@@ -91,12 +91,12 @@ const FieldDrawByJsx = (props) => {
       } else {
         className = "field_cell_empty";
       }
-      if (props.turnNum !== 0 && (cell !== "C" || cell !== "H")) {
+      if (props.turnNum > 1 && (cell !== "C" || cell !== "H")) {
         // if not H or C, add arrow class
         // display arrow to the direction of the next H or C cell
         // moved_up, moved_down, moved_left, moved_right
 
-        const prevCell = props.fields[props.turnNum - 1][i][j];
+        const prevCell = props.fields[props.turnNum - 2][i][j];
 
         if (prevCell === "H") {
           if (i > 0 && props.fields[props.turnNum][i - 1][j] === "H") {
@@ -107,6 +107,8 @@ const FieldDrawByJsx = (props) => {
             className += " moved_left";
           } else if (j < 14 && props.fields[props.turnNum][i][j + 1] === "H") {
             className += " moved_right";
+          }else{
+            className = "field_cell_hot dead_hot"
           }
         } else if (prevCell === "C") {
           if (i > 0 && props.fields[props.turnNum][i - 1][j] === "C") {
@@ -117,6 +119,8 @@ const FieldDrawByJsx = (props) => {
             className += " moved_left";
           } else if (j < 14 && props.fields[props.turnNum][i][j + 1] === "C") {
             className += " moved_right";
+          }else{
+            className = "field_cell_cool dead_cool"
           }
         }
       }
@@ -131,7 +135,7 @@ const FieldDrawByJsx = (props) => {
       }
 
       let svg = null;
-      if (cell === "H") {
+      if (cell === "H"||className.includes("dead_hot") ) {
         svg = (
           <svg
             viewBox="0 0 64 64"
@@ -148,7 +152,7 @@ const FieldDrawByJsx = (props) => {
             />
           </svg>
         );
-      } else if (cell === "C") {
+      } else if (cell === "C"||className.includes("dead_cool")) {
         svg = (
           <svg
             viewBox="0 0 64 64"

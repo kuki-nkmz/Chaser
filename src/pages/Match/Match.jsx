@@ -36,7 +36,6 @@ const Match = () => {
   const [autoSpeed,setAutoSpeed]=useState(1000)
   const [scores, setScores] = useState([]);
   const [speadM,setSpeadM]=useState(1)
-  const [isErrorInCreateMatchLog,setErrorInCreateMatchLog]=useState(false); 
   const { jsonData } = useParams();
   const navigate = useNavigate();
   const [play,{stop,pause}] = useSound(Sound)
@@ -97,6 +96,7 @@ const Match = () => {
           return; // 無効なアクションの場合はスキップ
         }
         const turn = newFields.length;
+        let isErrorInCreateMatchLog = false;
         let px, py;
         if (turn % 2) {
           // Cold
@@ -109,9 +109,11 @@ const Match = () => {
         }
         if (px < 0 || px >= height || py < 0 || py >= width) {
           console.error("Position out of bounds:", { px, py });
-          setErrorInCreateMatchLog(true); // 無効な位置の場合はスキップ
+          if (act[0] === "w"){
+            currentField[hotPos.x][hotPos.y] = "0";
+          } // 無効な位置の場合はスキップ
         }
-        if (act[0] === "p") {
+        else if (act[0] === "p") {
           currentField[px][py] = "2";
         } else if (act[0] === "w") {
           if (turn % 2) {
@@ -137,7 +139,6 @@ const Match = () => {
         newFields.push(structuredClone(currentField));
         newScores.push(structuredClone(score));
         
-        if(isErrorInCreateMatchLog)return;
 
       });
       setFields(structuredClone(newFields));

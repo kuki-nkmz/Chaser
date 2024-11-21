@@ -79,6 +79,14 @@
   }
 }
 
+.dead_hot{
+  animation: _scanLight 0.5s infinite;
+}
+
+.dead_cool{
+  animation: _scanLight 0.5s infinite;
+}
+
 /* .field_cell:hover {
   background-color: var(--primary-200);
 } */
